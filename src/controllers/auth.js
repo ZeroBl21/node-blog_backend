@@ -62,9 +62,8 @@ export const logout = async (req, res, next) => {
   }
 }
 
-export const profile = async (req, res, next) => {
+export const profile = async (req, res, _next) => {
   const { token } = req.cookies
-  console.log(token)
 
   try {
     const info = await jwt.verify(token, process.env.SECRET_CODE)
