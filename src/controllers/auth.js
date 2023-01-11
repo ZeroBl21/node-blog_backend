@@ -37,12 +37,40 @@ export const login = async (req, res, next) => {
       throw handleError(401, 'Invalid username or password')
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET_CODE, {
-      expiresIn: '1h'
-    })
+    const token = jwt.sign(
+      { username: user.username },
+      process.env.SECRET_CODE,
+      {
+        expiresIn: '1h'
+      }
+    )
 
-    res.cookie('token', token).json({ message: 'User login successful' })
+    res.cookie('token', token).json({
+      message: 'User login successful',
+      user: { userId: user._id, username: user.username }
+    })
   } catch (error) {
     next(error)
+  }
+}
+
+export const logout = async (req, res, next) => {
+  try {
+    res.cookie('token', '').json({ message: 'User logout successful' })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const profile = async (req, res, next) => {
+  const { token } = req.cookies
+  console.log(token)
+
+  try {
+    const info = await jwt.verify(token, process.env.SECRET_CODE)
+
+    res.status(200).json(info)
+  } catch (error) {
+    res.status(404).json({ message: 'User is not login' })
   }
 }
