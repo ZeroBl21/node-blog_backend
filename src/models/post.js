@@ -21,6 +21,11 @@ const postSchema = new Schema(
       type: String,
       required: [true, 'cover image must be provided'],
       min: 1
+    },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'the user must be provided']
     }
   },
   { timestamps: true }
